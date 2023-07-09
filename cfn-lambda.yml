@@ -1,0 +1,36 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Parameters:
+  EcrImageUri:
+    Description: ECR image URI
+    Type: String
+    Default: 868366341526.dkr.ecr.ap-northeast-1.amazonaws.com/easyjoy-ecr:latest
+Resources:
+  LambdaFunc:
+    Type: AWS::Lambda::Function
+    Properties:
+      Role:
+        Fn::GetAtt:
+        - LambdaRole
+        - Arn
+      PackageType: Image
+      Code:
+        ImageUri: !Ref EcrImageUri
+      Architectures:
+        - arm64
+      MemorySize: 512
+      Timeout: 30
+  LambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Path: /
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
