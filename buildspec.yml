@@ -19,7 +19,7 @@ phases:
       - echo Pushing the Docker image...
       - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
       - echo Remove latest Tag from Current Docker image...
-      - aws ecr batch-delete-image --repository-name ecr-tutorial --image-ids imageTag=latest
+      - aws ecr batch-delete-image --repository-name $IMAGE_REPO_NAME --image-ids imageTag=latest
       - echo Set latest Tag To New Docker image...
-      - MANIFEST=$(aws ecr batch-get-image --repository-name ecr-tutorial --image-ids imageTag=$IMAGE_TAG --query images[].imageManifest --output text)
-      - aws ecr put-image --repository-name ecr-tutorial --image-tag latest --image-manifest "$MANIFEST"
+      - MANIFEST=$(aws ecr batch-get-image --repository-name $IMAGE_REPO_NAME --image-ids imageTag=$IMAGE_TAG --query images[].imageManifest --output text)
+      - aws ecr put-image --repository-name $IMAGE_REPO_NAME --image-tag latest --image-manifest "$MANIFEST"
