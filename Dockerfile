@@ -1,4 +1,4 @@
-FROM python:3.9-buster AS builder
+FROM python:3.8-buster AS builder
 
 # 各種パッケージをインストール
 COPY requirements.txt .
@@ -7,7 +7,7 @@ RUN pip install awslambdaric && \
 
 
 # マルチステージビルドを使う。
-FROM python:3.9-slim-buster
+FROM python:3.8-slim-buster
 ARG APP_DIR="/home/app/"
 
 # 実行スクリプトのコピー
