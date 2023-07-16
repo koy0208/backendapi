@@ -23,3 +23,4 @@ phases:
       - echo Set latest Tag To New Docker image...
       - MANIFEST=$(aws ecr batch-get-image --repository-name $IMAGE_REPO_NAME --image-ids imageTag=$IMAGE_TAG --query images[].imageManifest --output text)
       - aws ecr put-image --repository-name $IMAGE_REPO_NAME --image-tag latest --image-manifest "$MANIFEST"
+      - aws lambda update-function-code --function-name easy-joy-api --image-uri $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
