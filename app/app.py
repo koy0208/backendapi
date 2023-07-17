@@ -7,7 +7,8 @@ import boto3
 from fastapi import FastAPI
 from mangum import Mangum
 from typing import Optional
-from amazon.paapi import AmazonAPI
+
+# from amazon.paapi import AmazonAPI
 from starlette.middleware.cors import CORSMiddleware  # 追加
 
 app = FastAPI()
@@ -20,18 +21,18 @@ app.add_middleware(
     allow_headers=["*"],  # 追記により追加
 )
 
-AMAZON_ACCESS_KEY = os.environ["AMAZON_ACCESS_KEY"]
-AMAZON_SECRET_KEY = os.environ["AMAZON_SECRET_KEY"]
-AMAZON_ASSOCIATE_ID = os.environ["AMAZON_ASSOCIATE_ID"]
-AMAZON_COUNTRY = os.environ["AMAZON_COUNTRY"]
-RAKUTEN_APP_ID = os.environ["RAKUTEN_APP_ID"]
-RAKUTEN_AFFILIATE_ID = os.environ["RAKUTEN_AFFILIATE_ID"]
-RAKUTEN_SEARCH_API_URL = os.environ["RAKUTEN_SEARCH_API_URL"]
-RAKUTEN_RANKING_API = os.environ["RAKUTEN_RANKING_API"]
+# AMAZON_ACCESS_KEY = os.environ["AMAZON_ACCESS_KEY"]
+# AMAZON_SECRET_KEY = os.environ["AMAZON_SECRET_KEY"]
+# AMAZON_ASSOCIATE_ID = os.environ["AMAZON_ASSOCIATE_ID"]
+# AMAZON_COUNTRY = os.environ["AMAZON_COUNTRY"]
+# RAKUTEN_APP_ID = os.environ["RAKUTEN_APP_ID"]
+# RAKUTEN_AFFILIATE_ID = os.environ["RAKUTEN_AFFILIATE_ID"]
+# RAKUTEN_SEARCH_API_URL = os.environ["RAKUTEN_SEARCH_API_URL"]
+# RAKUTEN_RANKING_API = os.environ["RAKUTEN_RANKING_API"]
 
-amazon_api = AmazonAPI(
-    AMAZON_ACCESS_KEY, AMAZON_SECRET_KEY, AMAZON_ASSOCIATE_ID, AMAZON_COUNTRY
-)
+# amazon_api = AmazonAPI(
+#     AMAZON_ACCESS_KEY, AMAZON_SECRET_KEY, AMAZON_ASSOCIATE_ID, AMAZON_COUNTRY
+# )
 
 
 athena = boto3.client("athena")
@@ -72,58 +73,58 @@ def get_amazon_result(item_json, rank=1):
     return res_json
 
 
-def search_item(
-    keyword, category="全て", max_price=100000, min_price=0, sort="standard", page=1
-):
-    search_category = {
-        "全て": {"rakuten": 100533, "amazon": "344845011"},
-        "チャイルドシート": {"rakuten": 566088, "amazon": "2490442051"},
-        "ファッション": {"rakuten": 111102, "amazon": "345991011"},
-        "シューズ": {"rakuten": 200811, "amazon": "2032360051"},
-        "ベビーカー": {"rakuten": 200833, "amazon": "345931011"},
-        "抱っこ紐": {"rakuten": 566089, "amazon": "345971011"},
-        "寝具": {"rakuten": 200822, "amazon": "1910016051"},
-        "ベッド": {"rakuten": 200822, "amazon": "1910002051"},
-        "インテリア": {"rakuten": 566090, "amazon": "1910002051"},
-        "おふろ・バス用品": {"rakuten": 200815, "amazon": "345914011"},
-        "おむつ・トイレ": {"rakuten": 213972, "amazon": "345889011"},
-        "ミルク・離乳食": {"rakuten": 200827, "amazon": "345977011"},
-        "その他": {"rakuten": 100533, "amazon": "344845011"},
-    }
-    sort_dict = {
-        "standard": {"rakuten": "standard", "amazon": "Featured"},
-        "min_price": {"rakuten": "+itemPrice", "amazon": "Price:LowToHigh"},
-        "max_price": {"rakuten": "-itemPrice", "amazon": "Price:HighToLow"},
-        "review": {"rakuten": "-reviewAverage", "amazon": "AvgCustomerReviews"},
-    }
-    params = {
-        "applicationId": RAKUTEN_APP_ID,
-        "formatVersion": 2,
-        "keyword": keyword,
-        "format": "json",
-        "genreId": search_category[category]["rakuten"],
-        "maxPrice": max_price,
-        "minPrice": min_price,
-        "sort": sort_dict[sort]["rakuten"],
-        "affiliateId": RAKUTEN_AFFILIATE_ID,
-        "page": page,
-        "carrier": 2,
-    }
-    res_rakuten = requests.get(RAKUTEN_SEARCH_API_URL, params=params).json()
-    res_amazon = amazon_api.search_items(
-        keywords=keyword,
-        browse_node_id=search_category[category]["amazon"],
-        sort_by=sort_dict[sort]["amazon"],
-        item_page=page,
-    )
+# def search_item(
+#     keyword, category="全て", max_price=100000, min_price=0, sort="standard", page=1
+# ):
+#     search_category = {
+#         "全て": {"rakuten": 100533, "amazon": "344845011"},
+#         "チャイルドシート": {"rakuten": 566088, "amazon": "2490442051"},
+#         "ファッション": {"rakuten": 111102, "amazon": "345991011"},
+#         "シューズ": {"rakuten": 200811, "amazon": "2032360051"},
+#         "ベビーカー": {"rakuten": 200833, "amazon": "345931011"},
+#         "抱っこ紐": {"rakuten": 566089, "amazon": "345971011"},
+#         "寝具": {"rakuten": 200822, "amazon": "1910016051"},
+#         "ベッド": {"rakuten": 200822, "amazon": "1910002051"},
+#         "インテリア": {"rakuten": 566090, "amazon": "1910002051"},
+#         "おふろ・バス用品": {"rakuten": 200815, "amazon": "345914011"},
+#         "おむつ・トイレ": {"rakuten": 213972, "amazon": "345889011"},
+#         "ミルク・離乳食": {"rakuten": 200827, "amazon": "345977011"},
+#         "その他": {"rakuten": 100533, "amazon": "344845011"},
+#     }
+#     sort_dict = {
+#         "standard": {"rakuten": "standard", "amazon": "Featured"},
+#         "min_price": {"rakuten": "+itemPrice", "amazon": "Price:LowToHigh"},
+#         "max_price": {"rakuten": "-itemPrice", "amazon": "Price:HighToLow"},
+#         "review": {"rakuten": "-reviewAverage", "amazon": "AvgCustomerReviews"},
+#     }
+#     params = {
+#         "applicationId": RAKUTEN_APP_ID,
+#         "formatVersion": 2,
+#         "keyword": keyword,
+#         "format": "json",
+#         "genreId": search_category[category]["rakuten"],
+#         "maxPrice": max_price,
+#         "minPrice": min_price,
+#         "sort": sort_dict[sort]["rakuten"],
+#         "affiliateId": RAKUTEN_AFFILIATE_ID,
+#         "page": page,
+#         "carrier": 2,
+#     }
+#     res_rakuten = requests.get(RAKUTEN_SEARCH_API_URL, params=params).json()
+#     res_amazon = amazon_api.search_items(
+#         keywords=keyword,
+#         browse_node_id=search_category[category]["amazon"],
+#         sort_by=sort_dict[sort]["amazon"],
+#         item_page=page,
+#     )
 
-    rakuten_items = [get_rakuten_result(j) for j in res_rakuten["Items"]]
-    amazon_items = [get_amazon_result(j) for j in res_amazon["data"]]
-    items_list = rakuten_items + amazon_items
-    sorted_items_list = sorted(items_list, key=lambda x: x["item_price"])
-    item_json = {"result": sorted_items_list}
+#     rakuten_items = [get_rakuten_result(j) for j in res_rakuten["Items"]]
+#     amazon_items = [get_amazon_result(j) for j in res_amazon["data"]]
+#     items_list = rakuten_items + amazon_items
+#     sorted_items_list = sorted(items_list, key=lambda x: x["item_price"])
+#     item_json = {"result": sorted_items_list}
 
-    return item_json
+#     return item_json
 
 
 def get_query(query):
@@ -218,29 +219,29 @@ async def post_ranking(
     return response
 
 
-@app.get("/search_item")
-async def post_search(
-    keyword: str,
-    category: str = None,
-    max_price: int = None,
-    min_price: int = None,
-    sort: str = None,
-    page: int = None,
-):
-    params = {
-        "keyword": keyword,
-        "category": category,
-        "max_price": max_price,
-        "min_price": min_price,
-        "sort": sort,
-        "page": page,
-    }
+# @app.get("/search_item")
+# async def post_search(
+#     keyword: str,
+#     category: str = None,
+#     max_price: int = None,
+#     min_price: int = None,
+#     sort: str = None,
+#     page: int = None,
+# ):
+#     params = {
+#         "keyword": keyword,
+#         "category": category,
+#         "max_price": max_price,
+#         "min_price": min_price,
+#         "sort": sort,
+#         "page": page,
+#     }
 
-    # Noneでないパラメーターだけを抽出
-    valid_params = {k: v for k, v in params.items() if v is not None}
+#     # Noneでないパラメーターだけを抽出
+#     valid_params = {k: v for k, v in params.items() if v is not None}
 
-    response = search_item(**valid_params)
-    return response
+#     response = search_item(**valid_params)
+#     return response
 
 
 handler = Mangum(app)
