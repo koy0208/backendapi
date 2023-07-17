@@ -7,6 +7,7 @@ import boto3
 from fastapi import FastAPI
 from mangum import Mangum
 from typing import Optional
+import traceback
 
 # from amazon.paapi import AmazonAPI
 from starlette.middleware.cors import CORSMiddleware  # 追加
@@ -200,21 +201,25 @@ async def get_health():
 
 
 @app.get("/ranking")
-async def post_ranking(
+async def get_ranking(
     get_month: str,
     category: str,
     min_price: int = None,
     max_price: int = None,
 ):
-    # Noneでないパラメーターだけを抽出
-    params = {
-        "get_month": get_month,
-        "category": category,
-        "min_price": min_price,
-        "max_price": max_price,
-    }
-    valid_params = {k: v for k, v in params.items() if v is not None}
-    response = get_category_ranking(**valid_params)
+    try:
+        # Noneでないパラメーターだけを抽出
+        params = {
+            "get_month": get_month,
+            "category": category,
+            "min_price": min_price,
+            "max_price": max_price,
+        }
+        valid_params = {k: v for k, v in params.items() if v is not None}
+        response = get_category_ranking(**valid_params)
+    except Exception as e:
+        print(f"エラーが発生しました: {e}")
+        print(traceback.format_exc())
 
     return response
 
