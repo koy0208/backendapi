@@ -224,6 +224,17 @@ async def get_ranking(
     return response
 
 
+@app.get("/ranking_test")
+async def get_ranking_test():
+    try:
+        response = get_query("select 200")
+    except Exception as e:
+        print(f"エラーが発生しました: {e}")
+        print(traceback.format_exc())
+
+    return response
+
+
 # @app.get("/search_item")
 # async def post_search(
 #     keyword: str,
